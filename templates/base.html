@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Reminder System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>ระบบรวบรวมนัดหมาย</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">หน้าหลัก</a>
+            <a href="{{ url_for('add_event') }}">เพิ่มงานใหม่</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
