@@ -2,9 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
 from models.event import Event, Priority
 from models.event_manager import EventManager
+from database import create_tables, add_event as db_add_event, get_all_events
 
 app = Flask(__name__)
 manager = EventManager()
+create_tables()
 
 @app.route("/")
 def index():
@@ -36,9 +38,23 @@ def add_event():
         manager.add_event(new_event)
         manager.save_to_json()
 
+        # บันทึก event ลง SQLite database
+        db_add_event(
+            title,
+            date.strftime("%Y-%m-%d"),
+            subject,
+            description,
+            priority.name
+        )
+
         return redirect(url_for("index"))
 
     return render_template("add_event.html")
+
+@app.route("/db_events")
+def db_events():
+    events = get_all_events()
+    return {"events": events}
 
 if __name__ == "__main__":
     app.run(debug=True)
