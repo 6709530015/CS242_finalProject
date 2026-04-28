@@ -3,10 +3,20 @@ from datetime import datetime
 from models.event import Event, Priority
 from models.event_manager import EventManager
 from database import create_tables, add_event as db_add_event, get_all_events
+from authentication.auth import get_service
 
 app = Flask(__name__)
 manager = EventManager()
 create_tables()
+
+@app.route("/login_google")
+def login_google():
+    try:
+        service = get_service()
+        # ได้ service แล้วสามารถ fetch จาก calendarได้
+        return redirect(url_for("index"))
+    except Exception as e:
+        return f"Authentication Failed: {e}"
 
 @app.route("/")
 def index():
