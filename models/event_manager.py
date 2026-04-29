@@ -1,5 +1,6 @@
 import json
-from models.event import Event
+from datetime import datetime
+from models.event import Event, Priority, Status
 
 class EventManager:
     def __init__(self, storage_file="storage/events.json"):
@@ -27,6 +28,29 @@ class EventManager:
             json.dump([e.__dict__ for e in self._events], f, default=str)
 
     def load_from_json(self):
-        with open(self._storage_file, "r") as f:
-            data = json.load(f)
-            # TODO: แปลงกลับเป็น Event object
+        try:
+            with open(self._storage_file, "r") as f:
+                content = f.read().strip()
+                if not content:          # ไฟล์ว่างเปล่า
+                    self._events = []
+                    return
+                data = json.loads(content)
+
+            self._events = []
+            for d in data:
+                event = Event(
+                    id=d["_id"],
+                    title=d["_title"],
+                    date=datetime.fromisoformat(d["_date"]),
+                    subject=d["_subject"],
+                    description=d["_description"],
+                    priority=Priority[d["_priority"].split(".")[-1]] if isinstance(d["_priority"], str)
+                              else Priority(d["_priority"])
+                )
+                event._status = Status[d["_status"].split(".")[-1]] if isinstance(d["_status"], str) \
+                                 else Status(d["_status"])
+                self._events.append(event)
+
+        except (FileNotFoundError, json.JSONDecodeError):
+            # ไฟล์ยังไม่มี หรืออ่านไม่ได้ → เริ่มด้วย list ว่าง
+            self._events = []
