@@ -2,11 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
 from models.event import Event, Priority
 from models.event_manager import EventManager
+from models.reminder import ReminderSystem
 from database import create_tables, add_event as db_add_event, get_all_events
 from authentication.auth import get_service
 
 app = Flask(__name__)
 manager = EventManager()
+reminder = ReminderSystem(manager)
 create_tables()
 
 @app.route("/login_google")
@@ -65,6 +67,17 @@ def add_event():
 def db_events():
     events = get_all_events()
     return {"events": events}
+
+@app.route("/stats")
+def stats():
+    analysis = reminder.analyze_events()
+    reminders = reminder.send_reminder()
+    chart = reminder.generate_calendar_view()
+    return render_template("stats.html",
+                           analysis=analysis,
+                           reminders=reminders,
+                           chart=chart)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
