@@ -16,6 +16,12 @@
         <td>{{ event._subject }}</td>
         <td>{{ event._priority.name }}</td>
         <td>{{ event._status.name }}</td>
+        <td>
+            <form action="{{ url_for('delete_event', event_id=event._id) }}" method="POST"
+                  onsubmit="return confirm('ลบ ' + '{{ event._title }}' + ' ใช่ไหม?')">
+                <button type="submit">ลบ</button>
+            </form>
+        </td>
     </tr>
     {% endfor %}
 </table>

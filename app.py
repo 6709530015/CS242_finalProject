@@ -3,7 +3,7 @@ from datetime import datetime
 from models.event import Event, Priority
 from models.event_manager import EventManager
 from models.reminder import ReminderSystem
-from database import create_tables, add_event as db_add_event, get_all_events
+from database import create_tables, add_event as db_add_event, get_all_events, delete_event as db_delete_event
 from authentication.auth import get_service
 
 app = Flask(__name__)
@@ -62,6 +62,14 @@ def add_event():
         return redirect(url_for("index"))
 
     return render_template("add_event.html")
+
+@app.route("/delete_event/<int:event_id>", methods=["POST"])
+def delete_event(event_id):
+    manager.load_from_json()
+    manager.remove_event(event_id)
+    manager.save_to_json()
+    db_delete_event(event_id)
+    return redirect(url_for("index"))
 
 @app.route("/db_events")
 def db_events():
