@@ -1,27 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>เพิ่มงานใหม่</h2>
-<form method="POST" action="{{ url_for('add_event') }}">
-    <label>ชื่อเรื่อง:</label>
-    <input type="text" name="title" required><br>
 
-    <label>วันที่:</label>
-    <input type="date" name="date" required><br>
+<div class="form-container">
+    <h2>เพิ่มงานใหม่</h2>
 
-    <label>วิชา:</label>
-    <input type="text" name="subject"><br>
+    <form method="POST" action="{{ url_for('add_event') }}">
+        
+        <label>ชื่อเรื่อง</label>
+        <input type="text" name="title" required>
 
-    <label>รายละเอียด:</label>
-    <textarea name="description"></textarea><br>
+        <label>วันที่</label>
+        <input type="date" name="date" required>
 
-    <label>ความสำคัญ:</label>
-    <select name="priority">
-        <option value="LOW">LOW</option>
-        <option value="MEDIUM">MEDIUM</option>
-        <option value="HIGH">HIGH</option>
-        <option value="URGENT">URGENT</option>
-    </select><br>
+        <label>วิชา</label>
+        <input type="text" name="subject">
 
-    <button type="submit">บันทึก</button>
-</form>
+        <label>รายละเอียด</label>
+        <textarea name="description" rows="4"></textarea> <!-- 👈 ยังอยู่แน่นอน -->
+
+        <label>ความสำคัญ</label>
+        <select name="priority">
+            <option value="LOW">LOW</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="HIGH">HIGH</option>
+            <option value="URGENT">URGENT</option>
+        </select>
+
+        <button type="submit">บันทึกงาน</button>
+    </form>
+</div>
+
 {% endblock %}
