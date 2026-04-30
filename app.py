@@ -105,10 +105,10 @@ def delete_event(event_id):
     gcal_id = event[7] if event else None  # index 7 = calendar_id
 
     # ถ้า DB ไม่มี ให้ fallback ไปหาใน JSON
-if gcal_id is None:
-    manager.load_from_json()
-    json_event = next((e for e in manager._events if e._id == event_id), None)  # e.id → e._id
-    gcal_id = json_event._calendar_id if json_event else None  # ใช้ _calendar_id ด้วย
+    if gcal_id is None:
+        manager.load_from_json()
+        json_event = next((e for e in manager._events if e._id == event_id), None)  # e.id → e._id
+        gcal_id = json_event._calendar_id if json_event else None  # ใช้ _calendar_id ด้วย
 
     #debug
     print(f"DEBUG: event = {event}")     
