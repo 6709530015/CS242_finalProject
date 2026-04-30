@@ -4,9 +4,27 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import matplotlib.font_manager as fm
 import io
 import base64
 from database import get_all_events
+
+# โหลด font ไทย (THSarabunNew หรือ fallback)
+def _get_thai_font():
+    thai_fonts = [
+        "THSarabunNew", "TH Sarabun New", "Tahoma",
+        "Microsoft Sans Serif", "Arial Unicode MS"
+    ]
+    for name in thai_fonts:
+        try:
+            fp = fm.findfont(fm.FontProperties(family=name), fallback_to_default=False)
+            if fp:
+                return fm.FontProperties(family=name)
+        except Exception:
+            continue
+    return fm.FontProperties()  # default
+
+THAI_FONT = _get_thai_font()
 
 class ReminderSystem:
     def __init__(self, manager: EventManager):
@@ -78,7 +96,7 @@ class ReminderSystem:
         fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
         fig.patch.set_facecolor('#0f0f0f')
 
-        # --- กราฟ 1: Events per Month (bar chart) ---
+        # --- กราฟ 1: จำนวนนัดหมายต่อเดือน ---
         ax1 = axes[0]
         ax1.set_facecolor('#1a1a1a')
         monthly = df.groupby("month_num").size().reset_index(name="count")
@@ -95,18 +113,27 @@ class ReminderSystem:
                 str(int(h)), ha='center', va='bottom',
                 color='white', fontsize=10, fontweight='bold'
             )
-        ax1.set_title("Events per Month", color='white', fontsize=13, pad=12)
-        ax1.set_xlabel("Month", color='#aaaaaa', fontsize=10)
-        ax1.set_ylabel("Count", color='#aaaaaa', fontsize=10)
+        ax1.set_title("จำนวนนัดหมายต่อเดือน", color='white', fontsize=13,
+                      pad=12, fontproperties=THAI_FONT)
+        ax1.set_xlabel("เดือน", color='#aaaaaa', fontsize=10,
+                       fontproperties=THAI_FONT)
+        ax1.set_ylabel("จำนวน", color='#aaaaaa', fontsize=10,
+                       fontproperties=THAI_FONT)
         ax1.tick_params(colors='#aaaaaa', labelsize=9)
         ax1.spines[:].set_color('#333333')
         ax1.set_ylim(0, monthly["count"].max() + 1.5 if not monthly.empty else 5)
         plt.setp(ax1.xaxis.get_majorticklabels(), rotation=30, ha='right')
 
-        # --- กราฟ 2: Priority Distribution (pie chart) ---
+        # --- กราฟ 2: สัดส่วนความสำคัญ ---
         ax2 = axes[1]
         ax2.set_facecolor('#1a1a1a')
         priority_counts = df["priority"].value_counts()
+        priority_thai = {
+            "LOW": "ต่ำ",
+            "MEDIUM": "ปานกลาง",
+            "HIGH": "สูง",
+            "URGENT": "เร่งด่วน"
+        }
         color_map = {
             "LOW": "#4CAF50",
             "MEDIUM": "#FFC107",
@@ -127,15 +154,20 @@ class ReminderSystem:
             at.set_color('white')
             at.set_fontsize(9)
         legend_patches = [
-            mpatches.Patch(color=color_map.get(p, "#888"), label=p)
+            mpatches.Patch(
+                color=color_map.get(p, "#888"),
+                label=priority_thai.get(p, p)
+            )
             for p in priority_counts.index
         ]
         ax2.legend(
             handles=legend_patches, loc="lower center",
-            bbox_to_anchor=(0.5, -0.15), ncol=2,
-            frameon=False, labelcolor='white', fontsize=9
+            bbox_to_anchor=(0.5, -0.18), ncol=2,
+            frameon=False, labelcolor='white', fontsize=9,
+            prop=THAI_FONT
         )
-        ax2.set_title("Priority Distribution", color='white', fontsize=13, pad=12)
+        ax2.set_title("สัดส่วนความสำคัญ", color='white', fontsize=13,
+                      pad=12, fontproperties=THAI_FONT)
 
         plt.tight_layout(pad=2.5)
 

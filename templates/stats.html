@@ -2,13 +2,13 @@
 {% block content %}
 <div style="max-width:860px; margin:0 auto; padding:2rem 1rem;">
 
-  <h2 style="margin-bottom:1.5rem;">📊 Event Analytics</h2>
+  <h2 style="margin-bottom:1.5rem;">📊 สถิติกิจกรรม</h2>
 
   <!-- ===== Reminder Alerts ===== -->
   {% if reminders %}
   <div style="background:#1a1a1a; border-left:4px solid #FFC107;
               border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem;">
-    <h5 style="color:#FFC107; margin:0 0 0.75rem;">⏰ Upcoming Reminders</h5>
+    <h5 style="color:#FFC107; margin:0 0 0.75rem;">⏰ การแจ้งเตือนที่ใกล้ถึง</h5>
     {% for r in reminders %}
     <div style="display:flex; align-items:center; gap:0.75rem;
                 padding:0.4rem 0; border-bottom:1px solid #2a2a2a;">
@@ -18,7 +18,7 @@
       {% else %}
         <span style="background:#FF9800; color:white; font-size:11px;
                      padding:2px 8px; border-radius:12px; font-weight:600;">
-          {{ r.days_left }}d left
+          เหลือ {{ r.days_left }} วัน
         </span>
       {% endif %}
       <span style="font-weight:600;">{{ r.title }}</span>
@@ -31,7 +31,7 @@
   <div style="background:#1a1a1a; border-left:4px solid #4CAF50;
               border-radius:8px; padding:0.75rem 1.25rem; margin-bottom:1.5rem;
               color:#4CAF50; font-size:14px;">
-    ✅ No upcoming reminders in the next 3 days
+    ✅ ไม่มีนัดหมายที่ใกล้ถึงใน 3 วันข้างหน้า
   </div>
   {% endif %}
 
@@ -45,7 +45,7 @@
       <div style="font-size:2rem; font-weight:700; color:#4f8ef7;">
         {{ analysis.total }}
       </div>
-      <div style="color:#888; font-size:13px; margin-top:4px;">Total Events</div>
+      <div style="color:#888; font-size:13px; margin-top:4px;">นัดหมายทั้งหมด</div>
     </div>
 
     <div style="background:#1a1a1a; border-radius:10px; padding:1.25rem;
@@ -53,7 +53,7 @@
       <div style="font-size:2rem; font-weight:700; color:#4CAF50;">
         {{ analysis.upcoming }}
       </div>
-      <div style="color:#888; font-size:13px; margin-top:4px;">Upcoming</div>
+      <div style="color:#888; font-size:13px; margin-top:4px;">กำลังจะมาถึง</div>
     </div>
 
     <div style="background:#1a1a1a; border-radius:10px; padding:1.25rem;
@@ -61,7 +61,7 @@
       <div style="font-size:2rem; font-weight:700; color:#F44336;">
         {{ analysis.overdue }}
       </div>
-      <div style="color:#888; font-size:13px; margin-top:4px;">Overdue</div>
+      <div style="color:#888; font-size:13px; margin-top:4px;">เลยกำหนดแล้ว</div>
     </div>
   </div>
 
@@ -69,7 +69,7 @@
   {% if analysis.by_subject %}
   <div style="background:#1a1a1a; border-radius:10px; padding:1.25rem;
               margin-bottom:1.5rem; border:1px solid #2a2a2a;">
-    <h5 style="margin:0 0 1rem; color:#ccc;">Events by Subject</h5>
+    <h5 style="margin:0 0 1rem; color:#ccc;">นัดหมายแยกตามวิชา</h5>
     {% for subject, count in analysis.by_subject.items() %}
     <div style="display:flex; align-items:center; gap:0.75rem;
                 margin-bottom:0.5rem;">
@@ -91,14 +91,14 @@
   {% if chart %}
   <div style="background:#1a1a1a; border-radius:10px; padding:1.25rem;
               border:1px solid #2a2a2a;">
-    <h5 style="margin:0 0 1rem; color:#ccc;">Visual Summary</h5>
+    <h5 style="margin:0 0 1rem; color:#ccc;">ภาพรวมกราฟ</h5>
     <img src="data:image/png;base64,{{ chart }}"
          style="width:100%; border-radius:6px;" alt="Event Analytics Chart">
   </div>
   {% else %}
   <div style="background:#1a1a1a; border-radius:10px; padding:2rem;
               text-align:center; color:#555; border:1px solid #2a2a2a;">
-    No data to display yet. Add some events first!
+    ยังไม่มีข้อมูล กรุณาเพิ่มนัดหมายก่อน!
   </div>
   {% endif %}
 
