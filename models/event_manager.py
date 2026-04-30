@@ -45,7 +45,8 @@ class EventManager:
                     subject=d["_subject"],
                     description=d["_description"],
                     priority=Priority[d["_priority"].split(".")[-1]] if isinstance(d["_priority"], str)
-                              else Priority(d["_priority"])
+                              else Priority(d["_priority"]),
+                    calendar_id=d.get("_calendar_id")
                 )
                 event._status = Status[d["_status"].split(".")[-1]] if isinstance(d["_status"], str) \
                                  else Status(d["_status"])

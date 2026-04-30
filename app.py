@@ -46,11 +46,7 @@ def add_event():
             priority=priority
         )
 
-        # เพิ่มเข้า EventManager และบันทึก
-        manager.add_event(new_event)
-        manager.save_to_json()
-
-        #บันทึกลง Google calendar
+        #sync Google calendar 
         calendar_id = None
         try:
             service = get_service()
@@ -62,6 +58,13 @@ def add_event():
         except Exception as e:
             # Don't crash — local save already succeeded
             print(f"Google Calendar sync failed: {e}")
+
+        # calendar_id ให้ Event object
+        new_event.set_calendar_id(calendar_id)
+
+        # เพิ่มเข้า EventManager และบันทึก
+        manager.add_event(new_event)
+        manager.save_to_json()
 
         # บันทึก event ลง SQLite database
         db_add_event(
