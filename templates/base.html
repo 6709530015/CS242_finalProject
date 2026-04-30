@@ -13,6 +13,13 @@
             <a href="{{ url_for('index') }}">หน้าหลัก</a>
             <a href="{{ url_for('add_event') }}">เพิ่มงานใหม่</a>
             <a href="{{ url_for('stats') }}">📊 สถิติ</a>
+        {% if session.get('logged_in') %}
+        <a href="{{ url_for('logout') }}" 
+           class="btn btn-danger" 
+           onclick="return confirm('คุณต้องการออกจากระบบใช่ไหม?')">Logout from Google</a>
+        {% else %}
+        <a href="{{ url_for('login_google') }}" class="btn btn-primary">Login with Google</a>
+        {% endif %}
         </nav>
     </header>
 

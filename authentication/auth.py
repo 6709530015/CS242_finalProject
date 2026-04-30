@@ -67,3 +67,13 @@ def add_event_to_google_calendar(service, title, date, description, subject):
     }
     created = service.events().insert(calendarId="primary", body=event_body).execute()
     return created.get("id") #calendar_id
+
+def logout_google():
+    """Removes the local token.pickle file to log the user out."""
+    if os.path.exists(TOKEN_FILE):
+        os.remove(TOKEN_FILE)
+        print(f"Logged out: {TOKEN_FILE} removed.")
+        return True
+    else:
+        print("No active session found.")
+        return False

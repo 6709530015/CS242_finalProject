@@ -1,12 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import datetime
 from models.event import Event, Priority
 from models.event_manager import EventManager
 from models.reminder import ReminderSystem
 from database import create_tables, add_event as db_add_event, get_all_events, delete_event as db_delete_event, get_event_by_id
-from authentication.auth import get_service, add_event_to_google_calendar
+from authentication.auth import get_service, add_event_to_google_calendar, logout_google, TOKEN_FILE
+import os
 
 app = Flask(__name__)
+app.secret_key = "secret123"
 manager = EventManager()
 reminder = ReminderSystem(manager)
 create_tables()
@@ -16,15 +18,31 @@ def login_google():
     try:
         service = get_service()
         # ได้ service แล้วสามารถ fetch จาก calendarได้
+        session['logged_in'] = True
         return redirect(url_for("index"))
     except Exception as e:
         return f"Authentication Failed: {e}"
+
+@app.route("/logout")
+def logout():
+    # Clear the session variable
+    session.pop('logged_in', None)
+    # Delete the token.pickle file
+    logout_google() 
+    
+    return redirect(url_for("index"))
 
 @app.route("/")
 def index():
     # โหลดข้อมูลจาก JSON ทุกครั้งที่เปิดหน้า
     manager.load_from_json()
-    return render_template("index.html", events=manager._events)
+    
+    # Check if the token file exists to determine login status
+    is_authenticated = os.path.exists(TOKEN_FILE)
+    
+    return render_template("index.html", 
+                           events=manager._events, 
+                           logged_in=is_authenticated)
 
 @app.route("/add_event", methods=["GET", "POST"])
 def add_event():
