@@ -113,11 +113,11 @@ class ReminderSystem:
                 str(int(h)), ha='center', va='bottom',
                 color='white', fontsize=10, fontweight='bold'
             )
-        ax1.set_title("จำนวนนัดหมายต่อเดือน", color='white', fontsize=13,
+        ax1.set_title("จำนวนนัดหมายต่อเดือน", color='white', fontsize=20,
                       pad=12, fontproperties=THAI_FONT)
-        ax1.set_xlabel("เดือน", color='#aaaaaa', fontsize=10,
+        ax1.set_xlabel("เดือน", color='#aaaaaa', fontsize=20,
                        fontproperties=THAI_FONT)
-        ax1.set_ylabel("จำนวน", color='#aaaaaa', fontsize=10,
+        ax1.set_ylabel("จำนวน", color='#aaaaaa', fontsize=20,
                        fontproperties=THAI_FONT)
         ax1.tick_params(colors='#aaaaaa', labelsize=9)
         ax1.spines[:].set_color('#333333')
@@ -173,7 +173,7 @@ class ReminderSystem:
 
         buf = io.BytesIO()
         plt.savefig(buf, format='png', bbox_inches='tight',
-                    facecolor='#0f0f0f', dpi=130)
+                    facecolor="#333333", dpi=130)
         buf.seek(0)
         img_b64 = base64.b64encode(buf.read()).decode('utf-8')
         plt.close()

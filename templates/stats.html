@@ -6,7 +6,7 @@
 
   <!-- ===== Reminder Alerts ===== -->
   {% if reminders %}
-  <div style="background:#1a1a1a; border-left:4px solid #FFC107;
+  <div style="background:#efefef; border-left:4px solid #FFC107;
               border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem;">
     <h5 style="color:#FFC107; margin:0 0 0.75rem;">⏰ การแจ้งเตือนที่ใกล้ถึง</h5>
     {% for r in reminders %}
@@ -28,7 +28,7 @@
     {% endfor %}
   </div>
   {% else %}
-  <div style="background:#1a1a1a; border-left:4px solid #4CAF50;
+  <div style="background:#efefef; border-left:4px solid #4CAF50;
               border-radius:8px; padding:0.75rem 1.25rem; margin-bottom:1.5rem;
               color:#4CAF50; font-size:14px;">
     ✅ ไม่มีนัดหมายที่ใกล้ถึงใน 3 วันข้างหน้า
@@ -40,24 +40,24 @@
   <div style="display:grid; grid-template-columns:repeat(3,1fr);
               gap:1rem; margin-bottom:1.5rem;">
 
-    <div style="background:#1a1a1a; border-radius:10px; padding:1.25rem;
-                text-align:center; border:1px solid #2a2a2a;">
+    <div style="background:#efefef; border-radius:10px; padding:1.25rem;
+                text-align:center; border:1px solid #888;">
       <div style="font-size:2rem; font-weight:700; color:#4f8ef7;">
         {{ analysis.total }}
       </div>
       <div style="color:#888; font-size:13px; margin-top:4px;">นัดหมายทั้งหมด</div>
     </div>
 
-    <div style="background:#1a1a1a; border-radius:10px; padding:1.25rem;
-                text-align:center; border:1px solid #2a2a2a;">
+    <div style="background:#efefef; border-radius:10px; padding:1.25rem;
+                text-align:center; border:1px solid #888;">
       <div style="font-size:2rem; font-weight:700; color:#4CAF50;">
         {{ analysis.upcoming }}
       </div>
       <div style="color:#888; font-size:13px; margin-top:4px;">กำลังจะมาถึง</div>
     </div>
 
-    <div style="background:#1a1a1a; border-radius:10px; padding:1.25rem;
-                text-align:center; border:1px solid #2a2a2a;">
+    <div style="background:#efefef; border-radius:10px; padding:1.25rem;
+                text-align:center; border:1px solid #888;">
       <div style="font-size:2rem; font-weight:700; color:#F44336;">
         {{ analysis.overdue }}
       </div>
@@ -67,18 +67,18 @@
 
   <!-- ===== Subject Breakdown ===== -->
   {% if analysis.by_subject %}
-  <div style="background:#1a1a1a; border-radius:10px; padding:1.25rem;
+  <div style="background:#efefef; border-radius:10px; padding:1.25rem;
               margin-bottom:1.5rem; border:1px solid #2a2a2a;">
-    <h5 style="margin:0 0 1rem; color:#ccc;">นัดหมายแยกตามวิชา</h5>
+    <h5 style="margin:0 0 1rem; color:#2a2a2a;">นัดหมายแยกตามวิชา</h5>
     {% for subject, count in analysis.by_subject.items() %}
     <div style="display:flex; align-items:center; gap:0.75rem;
                 margin-bottom:0.5rem;">
-      <span style="min-width:120px; font-size:13px; color:#bbb;">{{ subject }}</span>
+      <span style="min-width:120px; font-size:13px; color:#2a2a2a;">{{ subject }}</span>
       <div style="flex:1; background:#2a2a2a; border-radius:4px; height:12px; overflow:hidden;">
         <div style="height:100%; background:#4f8ef7; border-radius:4px;
                     width:{{ (count / analysis.total * 100)|int }}%;"></div>
       </div>
-      <span style="font-size:13px; color:#888; min-width:24px; text-align:right;">
+      <span style="font-size:13px; color:#2a2a2a; min-width:24px; text-align:right;">
         {{ count }}
       </span>
     </div>
@@ -89,15 +89,15 @@
 
   <!-- ===== Chart ===== -->
   {% if chart %}
-  <div style="background:#1a1a1a; border-radius:10px; padding:1.25rem;
+  <div style="background:#efefef; border-radius:10px; padding:1.25rem;
               border:1px solid #2a2a2a;">
-    <h5 style="margin:0 0 1rem; color:#ccc;">ภาพรวมกราฟ</h5>
+    <h5 style="margin:0 0 1rem; color:#2a2a2a;">ภาพรวมกราฟ</h5>
     <img src="data:image/png;base64,{{ chart }}"
          style="width:100%; border-radius:6px;" alt="Event Analytics Chart">
   </div>
   {% else %}
-  <div style="background:#1a1a1a; border-radius:10px; padding:2rem;
-              text-align:center; color:#555; border:1px solid #2a2a2a;">
+  <div style="background:#efefef; border-radius:10px; padding:2rem;
+              text-align:center; color:#2a2a2a; border:1px solid #2a2a2a;">
     ยังไม่มีข้อมูล กรุณาเพิ่มนัดหมายก่อน!
   </div>
   {% endif %}
