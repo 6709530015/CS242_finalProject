@@ -104,8 +104,15 @@ def delete_event(event_id):
     event = get_event_by_id(event_id)
     gcal_id = event[7] if event else None  # index 7 = calendar_id
 
-    print(f"DEBUG: event = {event}")      # ← เพิ่มบรรทัดนี้
-    print(f"DEBUG: gcal_id = {gcal_id}")  # ← และบรรทัดนี้
+    # ถ้า DB ไม่มี ให้ fallback ไปหาใน JSON
+    if gcal_id is None:
+        manager.load_from_json()
+        json_event = next((e for e in manager._events if e.id == event_id), None)
+        gcal_id = getattr(json_event, 'calendar_id', None) if json_event else None
+
+    #debug
+    print(f"DEBUG: event = {event}")     
+    print(f"DEBUG: gcal_id = {gcal_id}")  
 
     # ลบจาก Google Calendar
     if gcal_id:
