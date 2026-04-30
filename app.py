@@ -3,8 +3,8 @@ from datetime import datetime
 from models.event import Event, Priority
 from models.event_manager import EventManager
 from models.reminder import ReminderSystem
-from database import create_tables, add_event as db_add_event, get_all_events, delete_event as db_delete_event
-from authentication.auth import get_service
+from database import create_tables, add_event as db_add_event, get_all_events, delete_event as db_delete_event, get_event_by_id
+from authentication.auth import get_service, add_event_to_google_calendar
 
 app = Flask(__name__)
 manager = EventManager()
@@ -50,13 +50,27 @@ def add_event():
         manager.add_event(new_event)
         manager.save_to_json()
 
+        #บันทึกลง Google calendar
+        calendar_id = None
+        try:
+            service = get_service()
+            calendar_id = add_event_to_google_calendar(   #รับ calendar_id
+                service, title,
+                date.strftime("%Y-%m-%d"),
+                description, subject
+            )
+        except Exception as e:
+            # Don't crash — local save already succeeded
+            print(f"Google Calendar sync failed: {e}")
+
         # บันทึก event ลง SQLite database
         db_add_event(
             title,
             date.strftime("%Y-%m-%d"),
             subject,
             description,
-            priority.name
+            priority.name,
+            calendar_id
         )
 
         return redirect(url_for("index"))
@@ -65,6 +79,22 @@ def add_event():
 
 @app.route("/delete_event/<int:event_id>", methods=["POST"])
 def delete_event(event_id):
+    # ดึง calendar_event_id จาก DB ก่อนลบ
+    event = get_event_by_id(event_id)
+    gcal_id = event[7] if event else None  # index 7 = calendar_id
+
+    print(f"DEBUG: event = {event}")      # ← เพิ่มบรรทัดนี้
+    print(f"DEBUG: gcal_id = {gcal_id}")  # ← และบรรทัดนี้
+
+    # ลบจาก Google Calendar
+    if gcal_id:
+        try:
+            service = get_service()
+            service.events().delete(calendarId="primary", eventId=gcal_id).execute()
+        except Exception as e:
+            print(f"Google Calendar delete failed: {e}")
+
+    #delete locally
     manager.load_from_json()
     manager.remove_event(event_id)
     manager.save_to_json()

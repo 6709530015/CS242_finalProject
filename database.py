@@ -20,9 +20,17 @@ def create_tables():
             subject TEXT,
             description TEXT,
             priority TEXT NOT NULL,
-            status TEXT NOT NULL
+            status TEXT NOT NULL,
+            calendar_id TEXT  -- for Google calendar
         )
     """)
+
+     # Migration: เพิ่ม column ถ้ายังไม่มี calendar_id (DB เก่า)
+    try:
+        cursor.execute("ALTER TABLE events ADD COLUMN calendar_id TEXT")
+        print("Migration: added calendar_id column")
+    except sqlite3.OperationalError:
+        pass  # column มีอยู่แล้ว
 
     conn.commit()
     conn.close()
@@ -43,16 +51,16 @@ def calculate_status(date_str):
         return "UPCOMING"
 
 
-def add_event(title, date, subject, description, priority):
+def add_event(title, date, subject, description, priority, calendar_id=None):
     conn = get_connection()
     cursor = conn.cursor()
 
     status = calculate_status(date)
 
     cursor.execute("""
-        INSERT INTO events (title, date, subject, description, priority, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (title, date, subject, description, priority, status))
+        INSERT INTO events (title, date, subject, description, priority, status, calendar_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (title, date, subject, description, priority, status, calendar_id))
 
     conn.commit()
     conn.close()
@@ -77,3 +85,12 @@ def delete_event(event_id):
 
     conn.commit()
     conn.close()
+
+#สำหรับ Calendar
+def get_event_by_id(event_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM events WHERE id = ?", (event_id,))
+    event = cursor.fetchone()
+    conn.close()
+    return event  # tuple: (id, title, date, subject, description, priority, status, calendar_id)

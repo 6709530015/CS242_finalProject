@@ -33,10 +33,10 @@ class ReminderSystem:
     def _get_df(self):
         """ดึงข้อมูลจาก SQLite แล้วแปลงเป็น DataFrame"""
         rows = get_all_events()
-        # tuple: (id, title, date, subject, description, priority, status)
+        # tuple: (id, title, date, subject, description, priority, status, calendar_id)
         df = pd.DataFrame(rows, columns=[
             "id", "title", "date", "subject",
-            "description", "priority", "status"
+            "description", "priority", "status", "calendar_id"
         ])
         if df.empty:
             return df

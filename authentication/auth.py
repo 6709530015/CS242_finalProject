@@ -58,32 +58,12 @@ def get_service():
     service = build("calendar", "v3", credentials=creds)
     return service
 
-#function ทดสอบ
-def test_get_service():
-    try:
-        service = get_service()          # ← จะเปิด browser ให้ login ครั้งแรก
-        print("✅ ได้ service สำเร็จ!")
-
-        # ทดสอบเรียก API จริง
-        now = datetime.datetime.utcnow().isoformat() + 'Z'
-        events_result = service.events().list(
-            calendarId='primary',
-            timeMin=now,
-            maxResults=10,
-            singleEvents=True,
-            orderBy='startTime'
-        ).execute()
-
-        events = events_result.get('items', [])
-        print(f"พบอีเวนต์ {len(events)} รายการในอนาคต:")
-        
-        for event in events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            print(f"- {start} : {event.get('summary', 'No Title')}")
-
-    except Exception as e:
-        print(f"❌ เกิดข้อผิดพลาด: {e}")
-
-#ใช้ function ทดสอบ
-if __name__ == "__main__":
-    test_get_service()
+def add_event_to_google_calendar(service, title, date, description, subject):
+    event_body = {
+        "summary": title,
+        "description": f"[{subject}] {description}",
+        "start": {"date": date},  # "YYYY-MM-DD" format
+        "end":   {"date": date},
+    }
+    created = service.events().insert(calendarId="primary", body=event_body).execute()
+    return created.get("id") #calendar_id
